@@ -22,7 +22,13 @@ const listingSchema = mongoose.Schema({
   owner:{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
-  }
+  },
+  favoritedByUsers: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+    },
+  ],
 });
 
 const Listing = mongoose.model('Listing', listingSchema);
