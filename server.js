@@ -8,6 +8,7 @@ const morgan = require('morgan');
 const session = require('express-session');
 const isSignedIn = require('./middleware/is-signed-in.js');
 const passUserToView = require('./middleware/pass-user-to-view.js');
+const MongoStore = require('connect-mongo')
 
 const authController = require('./controllers/auth.js');
 const listingsController = require('./controllers/listing.js');
@@ -28,6 +29,9 @@ app.use(
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: true,
+    store: MongoStore.MongoStore.create({
+      mongoUrl: process.env.MONGODB_URI
+    })
   })
 );
 

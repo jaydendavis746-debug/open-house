@@ -34,8 +34,12 @@ router.post('/', async (req, res)=> {
 router.get('/:listingId', async (req, res)=>{
     try{
        const listingId =  req.params.listingId
-       const populatedListing = await Listing.findById(listingId)
-        res.render('listings/show.ejs', {listing : populatedListing })
+       const populatedListing = await Listing.findById(listingId).populate('owner')
+       const userHasFavorited = populatedListing.favoritedByUsers.some((user)=>{
+        // convert data objectId to string
+         return user == req.session.user._id;
+});
+        res.render('listings/show.ejs', {listing : populatedListing, userHasFavorited : userHasFavorited })
 
     }catch(error){
         console.log(error)
@@ -94,8 +98,40 @@ router.put('/:listingId', async (req, res) => {
   }
 });
 
+router.post('/:listingId/favourited-by/:userId', async (req, res)=>{
+    try{
+    // findAndUpdate
+    //$push- mongo version of push
+    await Listing.findByIdAndUpdate(req.params.listingId,{
+        $push:{favoritedByUsers: req.params.userId},
+    })
+    res.redirect(`/listings/${req.params.listingId}`)
+    
 
+    }catch(error){
+        console.log(error)
+        res.redirect('/')
+    }
+})
 
+router.delete('/:listingId/favourited-by/:userId', async (req, res)=>{
+    try{
+    // findAndUpdate
+    //$push- mongo version of push
+    await Listing.findByIdAndUpdate(req.params.listingId,{
+        $pull:{favoritedByUsers: req.params.userId},
+    })
+    res.redirect(`/listings/${req.params.listingId}`)
+    
+
+    }catch(error){
+        console.log(error)
+        res.redirect('/')
+    }
+})
 
 
 module.exports = router;
+
+// favoutite by router
+// POST/listings/:listingId/favourited-by/:userId

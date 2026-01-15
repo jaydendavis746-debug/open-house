@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> <%= listing.owner %> </title>
+    <title> <%= listing.owner.username %> lisitng  </title>
 </head>
 <body>
   <%- include('../partials/_navbar.ejs') %>
@@ -22,6 +22,21 @@
    <a href="/listings/<%=listing._id%>/edit">Edit this lisitng </a>
   <% } else { %>
     <p>You are not the owner, the owner is <%= listing.owner.username %> </p>
+  <% } %>
+  <h2>Favourites</h2>
+  <p>Favourited by <%= listing.favoritedByUsers.length%> people.</p>
+  <% if (userHasFavorited){ %>
+<p>You have favourited this lisitng!</p>
+     <form action="/listings/<%=listing._id%>/favourited-by/<%=user._id%>?_method=DELETE" method="POST">
+
+    <button type="submit">unfavourite!</button>
+  <% } else { %>
+  <p>You have not favourited this lisitng </p>
+  
+  <form action="/listings/<%=listing._id%>/favourited-by/<%=user._id%>" method="POST">
+
+    <button type="submit">Favourite!</button>
+  </form>
   <% } %>
 </body>
 </html>
